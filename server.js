@@ -11,10 +11,7 @@ app.get('/', (req, res) => {
 app.get('/:typedDate', (req, res) => {
   const typedDate = req.params.typedDate;
   let timestamp = {};
-  if (isNaN(typedDate)){
-    timestamp.unix = new Date(typedDate).getTime() / 1000.0;
-    timestamp.natural = typedDate;
-  } else {
+  if (!isNaN(typedDate)){
     let natural = new Date(parseInt(typedDate) * 1000);
     const monthName = [
       'January', 'February', 'March', 'April', 'May', 'June',
@@ -23,6 +20,12 @@ app.get('/:typedDate', (req, res) => {
     timestamp.unix = parseInt(typedDate);
     timestamp.natural = monthName[natural.getMonth()] + ' ' +
                         natural.getDate() + ', ' + natural.getFullYear();
+  } else if (new Date(typedDate) != 'Invalid Date'){
+    timestamp.unix = new Date(typedDate).getTime() / 1000.0;
+    timestamp.natural = typedDate;
+  } else {
+      timestamp.unix = null;
+      timestamp.natural = null;
   }
   res.json(timestamp);
 });
